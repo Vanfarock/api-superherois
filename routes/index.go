@@ -3,7 +3,7 @@ package routes
 import "github.com/gin-gonic/gin"
 
 func GetRotas(router *gin.Engine) {
-	getRotasHerois(router)
+	getRotasPersonagens(router)
 	getRotasQuadrinhos(router)
 	getRotasFilmes(router)
 }

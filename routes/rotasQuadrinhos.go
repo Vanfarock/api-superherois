@@ -13,7 +13,7 @@ func getRotasQuadrinhos(route *gin.Engine) {
 
 		quadrinhos.GET("/:id", controllers.GetQuadrinho)
 
-		quadrinhos.GET("/:id/herois", controllers.GetHeroisDoQuadrinho)
+		quadrinhos.GET("/:id/personagens", controllers.GetPersonagensDoQuadrinho)
 
 		quadrinhos.GET("/favoritos", controllers.GetQuadrinhosFavoritos)
 

@@ -14,8 +14,8 @@ func GetQuadrinho(c *gin.Context) {
 	c.String(http.StatusOK, "GetQuadrinho")
 }
 
-func GetHeroisDoQuadrinho(c *gin.Context) {
-	c.String(http.StatusOK, "GetHeroisDoQuadrinho")
+func GetPersonagensDoQuadrinho(c *gin.Context) {
+	c.String(http.StatusOK, "GetPersonagensDoQuadrinho")
 }
 
 func GetQuadrinhosFavoritos(c *gin.Context) {

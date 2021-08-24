@@ -6,21 +6,21 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func getRotasHerois(route *gin.Engine) {
-	heroi := route.Group("/herois")
+func getRotasPersonagens(route *gin.Engine) {
+	heroi := route.Group("/personagens")
 	{
-		heroi.GET("/", controllers.GetHerois)
+		heroi.GET("/", controllers.GetPersonagens)
 
-		heroi.GET("/:id", controllers.GetHeroi)
+		heroi.GET("/:id", controllers.GetPersonagens)
 
-		heroi.GET("/:id/quadrinhos", controllers.GetQuadrinhosDoHeroi)
+		heroi.GET("/:id/quadrinhos", controllers.GetQuadrinhosDoPersonagem)
 
-		heroi.GET("/favoritos", controllers.GetHeroisFavoritos)
+		heroi.GET("/favoritos", controllers.GetPersonagemFavoritos)
 
-		heroi.POST("/", controllers.CriarHeroi)
+		heroi.POST("/", controllers.CriarPersonagem)
 
-		heroi.PUT("/:id", controllers.AtualizarHeroi)
+		heroi.PUT("/:id", controllers.AtualizarPersonagem)
 
-		heroi.DELETE("/:id", controllers.ExcluirHeroi)
+		heroi.DELETE("/:id", controllers.ExcluirPersonagem)
 	}
 }
