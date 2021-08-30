@@ -1,19 +1,18 @@
 package main
 
 import (
+	"prog-web/config"
 	"prog-web/routes"
 
 	"github.com/gin-gonic/gin"
 )
 
-type Bla struct {
-	X int
-}
-
 func main() {
+	config.Load()
+
 	router := gin.Default()
 
 	routes.GetRotas(router)
 
-	router.Run()
+	router.Run(":3333")
 }

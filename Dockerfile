@@ -1,7 +1,13 @@
-FROM golang:alpine3.9
+FROM golang:1.17-alpine3.14
 WORKDIR /app
+
+COPY go.mod .
+COPY go.sum .
+RUN go mod download
+
 COPY . .
+RUN go build -o /app/api-superherois
 
-RUN ./download-dependencies.sh
+EXPOSE 3333
 
-CMD ["go", "run", "main.go"]
+CMD ["./api-superherois"]

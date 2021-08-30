@@ -1,0 +1,25 @@
+version: "3.9"
+services:
+  backend:
+    build: .
+    ports:
+      - "3000:3333"
+    restart: on-failure
+    container_name: "backend-web-ii"
+    depends_on: 
+      - db_postgres
+  
+  db_postgres:
+    image: postgres:13.4-alpine
+    container_name: "database-web-ii"
+    environment:
+      - POSTGRES_USER=${DB_USER}  
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+      - POSTGRES_DB=${DB_NAME}
+    ports:
+      - "5432:5432"
+    volumes:
+      - database_postgres:/var/lib/postgresql/data
+
+volumes:
+  database_postgres:

@@ -1,9 +1,19 @@
 package utils
 
-type TipoPersonagem int
+type TipoPersonagemType int
 
 const (
-	Heroi       TipoPersonagem = iota + 1
-	Vilao       TipoPersonagem = iota + 1
-	Coadjuvante TipoPersonagem = iota + 1
+	heroi       TipoPersonagemType = iota
+	vilao       TipoPersonagemType = iota
+	coadjuvante TipoPersonagemType = iota
 )
+
+var TipoPersonagem = struct {
+	Heroi       TipoPersonagemType
+	Vilao       TipoPersonagemType
+	Coadjuvante TipoPersonagemType
+}{
+	Heroi:       heroi,
+	Vilao:       vilao,
+	Coadjuvante: coadjuvante,
+}

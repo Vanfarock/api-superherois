@@ -14,7 +14,7 @@ func GetFilme(c *gin.Context) {
 	c.String(http.StatusOK, "GetFilme")
 }
 
-func GetFilmesDoHeroi(c *gin.Context) {
+func GetFilmesDoPersonagem(c *gin.Context) {
 	c.String(http.StatusOK, "GetFilmesDoHeroi")
 }
 

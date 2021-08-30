@@ -13,7 +13,7 @@ func getRotasFilmes(route *gin.Engine) {
 
 		filme.GET("/:id", controllers.GetFilme)
 
-		filme.GET("/:id/filmes", controllers.GetFilmesDoHeroi)
+		filme.GET("/:id/personagens", controllers.GetFilmesDoPersonagem)
 
 		filme.POST("/", controllers.AdicionarFilme)
 
