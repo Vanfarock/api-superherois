@@ -9,19 +9,21 @@ import (
 )
 
 func Login(c *gin.Context) {
+	usuario := c.GetHeader("usuario")
+	senha := c.GetHeader("senha")
+
 	servicoDeAutenticacao := services.ServicoDeAutenticacao{}
-	sucesso, err := servicoDeAutenticacao.Login(c.GetHeader("usuario"), c.GetHeader("senha"))
+	sucesso, err := servicoDeAutenticacao.Login(usuario, senha)
 	if err != nil {
 		c.AbortWithError(http.StatusBadRequest, err)
 		return
 	}
 
-	if !sucesso {
+	if sucesso {
+		c.String(http.StatusOK, services.ObterServicoAutenticacaoJWT().GerarToken(usuario))
+	} else {
 		c.AbortWithStatus(http.StatusUnauthorized)
-		return
 	}
-
-	c.Status(http.StatusOK)
 }
 
 func Cadastrar(c *gin.Context) {
@@ -34,7 +36,7 @@ func Cadastrar(c *gin.Context) {
 	servicoDeAutenticacao := services.ServicoDeAutenticacao{}
 	err := servicoDeAutenticacao.Cadastrar(credenciais.Usuario, credenciais.Senha)
 	if err != nil {
-		c.AbortWithError(http.StatusInternalServerError, err)
+		c.AbortWithError(http.StatusBadRequest, err)
 		return
 	}
 

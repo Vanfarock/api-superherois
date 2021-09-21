@@ -1,18 +1,23 @@
 package middlewares
 
 import (
+	"net/http"
+	"prog-web/services"
+	"strings"
+
 	"github.com/gin-gonic/gin"
 )
 
 func JwtMiddleware() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		// success, err := services.Login(c.GetHeader("usuario"), c.GetHeader("senha"))
-		// if err != nil {
-		// 	c.AbortWithError(http.StatusInternalServerError, err)
-		// }
+		authHeader := c.GetHeader("Authorization")
+		tokenString := strings.TrimPrefix(authHeader, "Bearer ")
+		token, err := services.ObterServicoAutenticacaoJWT().ValidarToken(tokenString)
 
-		// if !success {
-		// 	c.AbortWithStatus(http.StatusUnauthorized)
-		// }
+		if err != nil {
+			c.AbortWithError(http.StatusUnauthorized, err)
+		} else if token != nil && !token.Valid {
+			c.AbortWithStatus(http.StatusUnauthorized)
+		}
 	}
 }
