@@ -5,3 +5,6 @@ type Filme struct {
 	AnoLancamento int    `json:"anoLancamento" binding:"required"`
 	Personagem    []Personagem
 }
+
+type IFilme interface {
+}
