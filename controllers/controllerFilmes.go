@@ -1,64 +1,118 @@
 package controllers
 
 import (
-	"net/http"
+	"prog-web/dao"
 	"prog-web/database"
 	"prog-web/models"
-	"prog-web/services"
 
 	"github.com/gin-gonic/gin"
 )
 
-func GetFilmes(c *gin.Context) (models.Filme, error) {
+func GetFilmes(c *gin.Context) {
 	db, err := database.Connect()
 	if err != nil {
-		return nil, err
+		c.AbortWithError(400, err)
+		return
 	}
-	filmesDAO := services.FilmesDAO{}
-	resp := filmesDAO.GetFilmes(db)
-	return resp, nil
+	filmesDAO := dao.FilmesDAO{}
+	resp, res := filmesDAO.GetFilmes(db)
+	if res {
+		c.AbortWithStatusJSON(200, resp)
+	}
 }
 
-func GetFilme(c *gin.Context) (models.Filme, error) {
+func GetFilme(c *gin.Context) {
 	db, err := database.Connect()
 	if err != nil {
-		return nil, err
+		c.AbortWithError(400, err)
+		return
 	}
-	filmesDAO := services.FilmesDAO{}
-	resp := filmesDAO.GetFilme(db, c.Params.Get("nome"))
-	return resp, nil
+
+	filme := models.Filme{}
+	if err := c.ShouldBindJSON(filme); err != nil {
+		c.AbortWithError(400, err)
+		return
+	}
+
+	filmesDAO := dao.FilmesDAO{}
+	resp := filmesDAO.GetFilme(db, filme.Nome)
+	c.AbortWithStatusJSON(200, resp)
 }
 
 func GetFilmesDoPersonagem(c *gin.Context) {
-	c.String(http.StatusOK, "GetFilmesDoHeroi")
+	db, err := database.Connect()
+	if err != nil {
+		c.AbortWithError(400, err)
+		return
+	}
+
+	filme := models.Filme{}
+	if err := c.ShouldBindJSON(filme); err != nil {
+		c.AbortWithError(400, err)
+		return
+	}
+
+	filmesDAO := dao.FilmesDAO{}
+	resp := filmesDAO.GetFilmesDoPersonagem(db, filme.Nome)
+	c.AbortWithStatusJSON(200, resp)
 }
 
 func AdicionarFilme(c *gin.Context) {
 	db, err := database.Connect()
 	if err != nil {
-		return nil, err
+		c.AbortWithError(400, err)
+		return
 	}
-	filmesDAO := services.FilmesDAO{}
-	filme := models.Filme{
-		Nome : c.Params.Get("nome")
-		AnoLancamento : c.Params.Get("ano")
-	//	Personagem : c.Params.Get("nome")
+	filme := models.Filme{}
+	if err := c.ShouldBindJSON(filme); err != nil {
+		c.AbortWithError(400, err)
+		return
+	}
 
-	}
+	filmesDAO := dao.FilmesDAO{}
 	resp := filmesDAO.AdicionarFilme(db, filme)
-	return resp, nil
+	if resp == nil {
+		c.AbortWithStatus(200)
+		return
+	}
 }
 
 func AtualizarFilme(c *gin.Context) {
-	c.String(http.StatusOK, "AtualizarFilme")
+	db, err := database.Connect()
+	if err != nil {
+		c.AbortWithError(400, err)
+		return
+	}
+	filme := models.Filme{}
+	if err := c.ShouldBindJSON(filme); err != nil {
+		c.AbortWithError(400, err)
+		return
+	}
+
+	filmesDAO := dao.FilmesDAO{}
+	resp := filmesDAO.AtualizarFilme(db, filme)
+	if resp == nil {
+		c.AbortWithStatus(200)
+		return
+	}
 }
 
 func ExcluirFilme(c *gin.Context) {
 	db, err := database.Connect()
 	if err != nil {
-		return nil, err
+		c.AbortWithError(400, err)
+		return
 	}
-	filmesDAO := services.FilmesDAO{}
-	resp := filmesDAO.GetFilmes(db)
-	return resp, nil
+	filme := models.Filme{}
+	if err := c.ShouldBindJSON(filme); err != nil {
+		c.AbortWithError(400, err)
+		return
+	}
+
+	filmesDAO := dao.FilmesDAO{}
+	resp := filmesDAO.ExcluirFilme(db, filme)
+	if resp == nil {
+		c.AbortWithStatus(200)
+		return
+	}
 }

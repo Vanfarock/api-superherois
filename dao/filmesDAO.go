@@ -22,28 +22,27 @@ type IFilmesDAO interface {
 
 type FilmesDAO struct{}
 
-func (FilmesDAO) getFilmes(db *gorm.DB) (result models.IFilme, res bool) {
+func (FilmesDAO) GetFilmes(db *gorm.DB) (result models.IFilme, res bool) {
 	result, res = db.Get("")
 	return result, res
 }
 
-func (FilmesDAO) getFilme(db *gorm.DB, nome string) models.IFilme {
+func (FilmesDAO) GetFilme(db *gorm.DB, nome string) models.IFilme {
 	return db.Where("nome = ?", nome)
 }
 
-func (FilmesDAO) getFilmesDoPersonagem(db *gorm.DB, nome string) (result models.IFilme) {
-	result = db.Where("personagem = ?", nome)
-	return result
+func (FilmesDAO) GetFilmesDoPersonagem(db *gorm.DB, nome string) models.IFilme {
+	return db.Where("personagem = ?", nome)
 }
 
 func (FilmesDAO) AdicionarFilme(db *gorm.DB, filme models.Filme) error {
 	return db.Create(filme).Error
 }
 
-func (FilmesDAO) AtualizarFilme(db *gorm.DB, filme models.Filme) {
-	db.Update("anoLancamento", filme.AnoLancamento).Update("personagem", filme.Personagem).Where("nome = ?", filme.Nome)
+func (FilmesDAO) AtualizarFilme(db *gorm.DB, filme models.Filme) error {
+	return db.Update("anoLancamento", filme.AnoLancamento).Where("nome = ?", filme.Nome).Error
 }
 
-func (FilmesDAO) ExcluirFilme(db *gorm.DB, filme models.Filme) {
-	db.Delete(filme)
+func (FilmesDAO) ExcluirFilme(db *gorm.DB, filme models.Filme) error {
+	return db.Delete(filme).Error
 }
