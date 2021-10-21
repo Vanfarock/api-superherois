@@ -1,9 +1,15 @@
 package database
 
-import "prog-web/models"
+import (
+	"fmt"
+	"prog-web/models"
+)
 
 func Migrar() {
-	db, _ := Connect()
+	db, err := Connect()
+	fmt.Println(db)
+	fmt.Println(err)
 
 	db.AutoMigrate(&models.Credenciais{})
+	db.AutoMigrate(&models.Filme{})
 }

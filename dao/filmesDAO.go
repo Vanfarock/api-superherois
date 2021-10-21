@@ -1,6 +1,7 @@
 package dao
 
 import (
+	"errors"
 	"prog-web/models"
 
 	"gorm.io/gorm"
@@ -22,27 +23,37 @@ type IFilmesDAO interface {
 
 type FilmesDAO struct{}
 
-func (FilmesDAO) GetFilmes(db *gorm.DB) (result models.IFilme, res bool) {
-	result, res = db.Get("")
-	return result, res
+func (FilmesDAO) GetFilmes(db *gorm.DB) (filmes []models.Filme) {
+	db.Find(&filmes)
+	return filmes
 }
 
-func (FilmesDAO) GetFilme(db *gorm.DB, nome string) models.IFilme {
-	return db.Where("nome = ?", nome)
+func (FilmesDAO) GetFilme(db *gorm.DB, id string) (models.Filme, error) {
+	filme := models.Filme{}
+	result := db.Where("id = ?", id).First(&filme)
+	if result.RowsAffected == 0 {
+		return models.Filme{}, errors.New("Filme não encontrado!")
+	}
+	return filme, nil
 }
 
-func (FilmesDAO) GetFilmesDoPersonagem(db *gorm.DB, nome string) models.IFilme {
-	return db.Where("personagem = ?", nome)
+func (FilmesDAO) GetFilmesDoPersonagem(db *gorm.DB, nome string) (filmes []models.Filme) {
+	db.Where("personagem = ?", nome).Find(&filmes)
+	return filmes
 }
 
-func (FilmesDAO) AdicionarFilme(db *gorm.DB, filme models.Filme) error {
-	return db.Create(filme).Error
+func (FilmesDAO) AdicionarFilme(db *gorm.DB, filme *models.Filme) error {
+	result := db.Create(&filme)
+	return result.Error
 }
 
 func (FilmesDAO) AtualizarFilme(db *gorm.DB, filme models.Filme) error {
-	return db.Update("anoLancamento", filme.AnoLancamento).Where("nome = ?", filme.Nome).Error
+	nfilme := models.Filme{}
+	result := db.Model(&nfilme).Where("id = ?", filme.ID).Update("AnoLancamento", filme.AnoLancamento).Update("Nome", filme.Nome)
+	return result.Error
 }
 
-func (FilmesDAO) ExcluirFilme(db *gorm.DB, filme models.Filme) error {
-	return db.Delete(filme).Error
+func (FilmesDAO) ExcluirFilme(db *gorm.DB, id string) error {
+	result := db.Delete(&models.Filme{}, id)
+	return result.Error
 }

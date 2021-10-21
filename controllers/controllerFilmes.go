@@ -4,6 +4,7 @@ import (
 	"prog-web/dao"
 	"prog-web/database"
 	"prog-web/models"
+	"strings"
 
 	"github.com/gin-gonic/gin"
 )
@@ -15,10 +16,8 @@ func GetFilmes(c *gin.Context) {
 		return
 	}
 	filmesDAO := dao.FilmesDAO{}
-	resp, res := filmesDAO.GetFilmes(db)
-	if res {
-		c.AbortWithStatusJSON(200, resp)
-	}
+	resp := filmesDAO.GetFilmes(db)
+	c.AbortWithStatusJSON(200, resp)
 }
 
 func GetFilme(c *gin.Context) {
@@ -28,14 +27,15 @@ func GetFilme(c *gin.Context) {
 		return
 	}
 
-	filme := models.Filme{}
-	if err := c.ShouldBindJSON(filme); err != nil {
+	id := strings.TrimPrefix(c.Request.URL.Path, "/filmes/")
+
+	filmesDAO := dao.FilmesDAO{}
+	resp, err := filmesDAO.GetFilme(db, id)
+	if err != nil {
 		c.AbortWithError(400, err)
 		return
 	}
 
-	filmesDAO := dao.FilmesDAO{}
-	resp := filmesDAO.GetFilme(db, filme.Nome)
 	c.AbortWithStatusJSON(200, resp)
 }
 
@@ -64,17 +64,18 @@ func AdicionarFilme(c *gin.Context) {
 		return
 	}
 	filme := models.Filme{}
-	if err := c.ShouldBindJSON(filme); err != nil {
+	if err := c.ShouldBindJSON(&filme); err != nil {
 		c.AbortWithError(400, err)
 		return
 	}
 
-	filmesDAO := dao.FilmesDAO{}
-	resp := filmesDAO.AdicionarFilme(db, filme)
-	if resp == nil {
-		c.AbortWithStatus(200)
+	filmesDAO := new(dao.FilmesDAO)
+	err2 := filmesDAO.AdicionarFilme(db, &filme)
+	if err2 != nil {
+		c.AbortWithError(400, err2)
 		return
 	}
+	c.AbortWithStatus(200)
 }
 
 func AtualizarFilme(c *gin.Context) {
@@ -84,7 +85,7 @@ func AtualizarFilme(c *gin.Context) {
 		return
 	}
 	filme := models.Filme{}
-	if err := c.ShouldBindJSON(filme); err != nil {
+	if err := c.ShouldBindJSON(&filme); err != nil {
 		c.AbortWithError(400, err)
 		return
 	}
@@ -103,14 +104,11 @@ func ExcluirFilme(c *gin.Context) {
 		c.AbortWithError(400, err)
 		return
 	}
-	filme := models.Filme{}
-	if err := c.ShouldBindJSON(filme); err != nil {
-		c.AbortWithError(400, err)
-		return
-	}
+
+	id := strings.TrimPrefix(c.Request.URL.Path, "/filmes/")
 
 	filmesDAO := dao.FilmesDAO{}
-	resp := filmesDAO.ExcluirFilme(db, filme)
+	resp := filmesDAO.ExcluirFilme(db, id)
 	if resp == nil {
 		c.AbortWithStatus(200)
 		return

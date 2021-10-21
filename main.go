@@ -14,8 +14,6 @@ func main() {
 
 	router := gin.Default()
 
-	// router.Use(middlewares.JwtMiddleware())
-
 	routes.GetRotas(router)
 
 	router.Run(":3333")
