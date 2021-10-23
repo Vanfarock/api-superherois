@@ -12,4 +12,5 @@ func Migrar() {
 
 	db.AutoMigrate(&models.Credenciais{})
 	db.AutoMigrate(&models.Filme{})
+	db.AutoMigrate(&models.Personagem{})
 }

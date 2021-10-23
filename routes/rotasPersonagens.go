@@ -2,6 +2,7 @@ package routes
 
 import (
 	"prog-web/controllers"
+	"prog-web/middlewares"
 
 	"github.com/gin-gonic/gin"
 )
@@ -9,18 +10,16 @@ import (
 func getRotasPersonagens(route *gin.Engine) {
 	personagem := route.Group("/personagens")
 	{
-		personagem.GET("/", controllers.GetPersonagens)
+		personagem.GET("/", middlewares.JwtMiddleware(), controllers.GetPersonagens)
 
-		personagem.GET("/:id", controllers.GetPersonagens)
+		personagem.GET("/:id", middlewares.JwtMiddleware(), controllers.GetPersonagem)
 
-		personagem.GET("/:id/quadrinhos", controllers.GetQuadrinhosDoPersonagem)
+		personagem.GET("/:id/quadrinhos", middlewares.JwtMiddleware(), controllers.GetQuadrinhosDoPersonagem)
 
-		personagem.GET("/favoritos", controllers.GetPersonagemFavoritos)
+		personagem.POST("/", middlewares.JwtMiddleware(), controllers.CriarPersonagem)
 
-		personagem.POST("/", controllers.CriarPersonagem)
+		personagem.PUT("/:id", middlewares.JwtMiddleware(), controllers.AtualizarPersonagem)
 
-		personagem.PUT("/:id", controllers.AtualizarPersonagem)
-
-		personagem.DELETE("/:id", controllers.ExcluirPersonagem)
+		personagem.DELETE("/:id", middlewares.JwtMiddleware(), controllers.ExcluirPersonagem)
 	}
 }

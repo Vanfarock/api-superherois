@@ -24,13 +24,13 @@ type IFilmesDAO interface {
 type FilmesDAO struct{}
 
 func (FilmesDAO) GetFilmes(db *gorm.DB) (filmes []models.Filme) {
-	db.Find(&filmes)
+	db.Preload("Personagem").Find(&filmes)
 	return filmes
 }
 
 func (FilmesDAO) GetFilme(db *gorm.DB, id string) (models.Filme, error) {
 	filme := models.Filme{}
-	result := db.Where("id = ?", id).First(&filme)
+	result := db.Where("id = ?", id).Find(&filme)
 	if result.RowsAffected == 0 {
 		return models.Filme{}, errors.New("Filme não encontrado!")
 	}
@@ -38,6 +38,7 @@ func (FilmesDAO) GetFilme(db *gorm.DB, id string) (models.Filme, error) {
 }
 
 func (FilmesDAO) GetFilmesDoPersonagem(db *gorm.DB, nome string) (filmes []models.Filme) {
+	//db.Model(&filmes).Association("Personagem").Find(&personagem)
 	db.Where("personagem = ?", nome).Find(&filmes)
 	return filmes
 }
