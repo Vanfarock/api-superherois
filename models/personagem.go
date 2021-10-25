@@ -10,4 +10,5 @@ type Personagem struct {
 	TipoPersonagem    int    `json:"tipo" binding:"required"`
 	//	Quadrinhos        []Quadrinho
 	Filmes []*Filme `gorm:"many2many:personagem_filmes;"`
+	Series []*Serie `gorm:"many2many:personagem_series;"`
 }

@@ -7,4 +7,5 @@ func GetRotas(router *gin.Engine) {
 	getRotasPersonagens(router)
 	getRotasQuadrinhos(router)
 	getRotasFilmes(router)
+	getRotasSeries(router)
 }
