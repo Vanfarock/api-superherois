@@ -78,6 +78,29 @@ func AdicionarFilme(c *gin.Context) {
 	c.AbortWithStatus(200)
 }
 
+func AdicionarPersonagem(c *gin.Context) {
+	db, err := database.Connect()
+	if err != nil {
+		c.AbortWithError(400, err)
+		return
+	}
+	personagem := models.Personagem{}
+	if err := c.ShouldBindJSON(&personagem); err != nil {
+		c.AbortWithError(400, err)
+		return
+	}
+
+	id := strings.TrimPrefix(c.Request.URL.Path, "/filmes/")
+
+	filmesDAO := new(dao.FilmesDAO)
+	err2 := filmesDAO.AdicionarPersonagemAoFilme(db, &personagem, id)
+	if err2 != nil {
+		c.AbortWithError(400, err2)
+		return
+	}
+	c.AbortWithStatus(200)
+}
+
 func AtualizarFilme(c *gin.Context) {
 	db, err := database.Connect()
 	if err != nil {
