@@ -4,7 +4,6 @@ import (
 	"prog-web/dao"
 	"prog-web/database"
 	"prog-web/models"
-	"strings"
 
 	"github.com/gin-gonic/gin"
 )
@@ -12,7 +11,7 @@ import (
 func GetFilmes(c *gin.Context) {
 	db, err := database.Connect()
 	if err != nil {
-		c.AbortWithError(400, err)
+		c.AbortWithError(500, err)
 		return
 	}
 	filmesDAO := dao.FilmesDAO{}
@@ -23,11 +22,11 @@ func GetFilmes(c *gin.Context) {
 func GetFilme(c *gin.Context) {
 	db, err := database.Connect()
 	if err != nil {
-		c.AbortWithError(400, err)
+		c.AbortWithError(500, err)
 		return
 	}
 
-	id := strings.TrimPrefix(c.Request.URL.Path, "/filmes/")
+	id := c.Param("idFilme")
 
 	filmesDAO := dao.FilmesDAO{}
 	resp, err := filmesDAO.GetFilme(db, id)
@@ -42,18 +41,14 @@ func GetFilme(c *gin.Context) {
 func GetFilmesDoPersonagem(c *gin.Context) {
 	db, err := database.Connect()
 	if err != nil {
-		c.AbortWithError(400, err)
+		c.AbortWithError(500, err)
 		return
 	}
 
-	filme := models.Filme{}
-	if err := c.ShouldBindJSON(filme); err != nil {
-		c.AbortWithError(400, err)
-		return
-	}
+	id := c.Param("idFilme")
 
 	filmesDAO := dao.FilmesDAO{}
-	resp := filmesDAO.GetFilmesDoPersonagem(db, filme.Nome)
+	resp := filmesDAO.GetFilmesDoPersonagem(db, id)
 	c.AbortWithStatusJSON(200, resp)
 }
 
@@ -81,21 +76,17 @@ func AdicionarFilme(c *gin.Context) {
 func AdicionarPersonagem(c *gin.Context) {
 	db, err := database.Connect()
 	if err != nil {
-		c.AbortWithError(400, err)
-		return
-	}
-	personagem := models.Personagem{}
-	if err := c.ShouldBindJSON(&personagem); err != nil {
-		c.AbortWithError(400, err)
+		c.AbortWithError(500, err)
 		return
 	}
 
-	id := strings.TrimPrefix(c.Request.URL.Path, "/filmes/")
+	idFilme := c.Param("idFilme")
+	idPersonagem := c.Param("idPersonagem")
 
 	filmesDAO := new(dao.FilmesDAO)
-	err2 := filmesDAO.AdicionarPersonagemAoFilme(db, &personagem, id)
+	err2 := filmesDAO.AdicionarPersonagemAoFilme(db, idFilme, idPersonagem)
 	if err2 != nil {
-		c.AbortWithError(400, err2)
+		c.AbortWithError(404, err2)
 		return
 	}
 	c.AbortWithStatus(200)
@@ -104,7 +95,7 @@ func AdicionarPersonagem(c *gin.Context) {
 func AtualizarFilme(c *gin.Context) {
 	db, err := database.Connect()
 	if err != nil {
-		c.AbortWithError(400, err)
+		c.AbortWithError(500, err)
 		return
 	}
 	filme := models.Filme{}
@@ -124,11 +115,11 @@ func AtualizarFilme(c *gin.Context) {
 func ExcluirFilme(c *gin.Context) {
 	db, err := database.Connect()
 	if err != nil {
-		c.AbortWithError(400, err)
+		c.AbortWithError(500, err)
 		return
 	}
 
-	id := strings.TrimPrefix(c.Request.URL.Path, "/filmes/")
+	id := c.Param("idFilme")
 
 	filmesDAO := dao.FilmesDAO{}
 	resp := filmesDAO.ExcluirFilme(db, id)

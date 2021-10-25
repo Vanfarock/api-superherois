@@ -24,7 +24,7 @@ type IFilmesDAO interface {
 type FilmesDAO struct{}
 
 func (FilmesDAO) GetFilmes(db *gorm.DB) (filmes []models.Filme) {
-	db.Preload("Personagem").Find(&filmes)
+	db.Preload("Personagens").Find(&filmes)
 	return filmes
 }
 
@@ -37,10 +37,10 @@ func (FilmesDAO) GetFilme(db *gorm.DB, id string) (models.Filme, error) {
 	return filme, nil
 }
 
-func (FilmesDAO) GetFilmesDoPersonagem(db *gorm.DB, nome string) (personagem []models.Personagem) {
+func (FilmesDAO) GetFilmesDoPersonagem(db *gorm.DB, id string) (personagem []models.Personagem) {
 	filme := models.Filme{}
-	db.Where("nome = ?", nome).Find(&filme)
-	db.Model(&filme).Association("Personagem").Find(&personagem)
+	db.Where("ID = ?", id).Find(&filme)
+	db.Model(&filme).Association("Personagens").Find(&personagem)
 	return personagem
 }
 
@@ -49,10 +49,24 @@ func (FilmesDAO) AdicionarFilme(db *gorm.DB, filme *models.Filme) error {
 	return result.Error
 }
 
-func (FilmesDAO) AdicionarPersonagemAoFilme(db *gorm.DB, personagem *models.Personagem, id string) error {
+func (FilmesDAO) AdicionarPersonagemAoFilme(db *gorm.DB, idFilme string, idPersonagem string) error {
 	filme := models.Filme{}
-	db.Where("id = ?", id).Find(&filme)
-	erro := db.Model(&filme).Association("Personagem").Append(&personagem)
+	resultFilme := db.Where("id = ?", idFilme).Find(&filme)
+
+	if resultFilme.RowsAffected == 0 {
+		erro := errors.New("Filme não encontrado!")
+		return erro
+	}
+
+	personagem := models.Personagem{}
+	resultPersonagem := db.Where("id = ?", idPersonagem).Find(&personagem)
+
+	if resultPersonagem.RowsAffected == 0 {
+		erro := errors.New("Personagem não encontrado!")
+		return erro
+	}
+
+	erro := db.Model(&filme).Association("Personagens").Append(&personagem)
 	return erro
 }
 

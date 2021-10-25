@@ -12,16 +12,16 @@ func getRotasFilmes(route *gin.Engine) {
 	{
 		filme.GET("/", middlewares.JwtMiddleware(), controllers.GetFilmes)
 
-		filme.GET("/:id", middlewares.JwtMiddleware(), controllers.GetFilme)
+		filme.GET("/:idFilme", middlewares.JwtMiddleware(), controllers.GetFilme)
 
-		filme.GET("/:id/personagens", middlewares.JwtMiddleware(), controllers.GetFilmesDoPersonagem)
+		filme.GET("/personagens/:idFilme", middlewares.JwtMiddleware(), controllers.GetFilmesDoPersonagem)
 
 		filme.POST("/", middlewares.JwtMiddleware(), controllers.AdicionarFilme)
 
-		filme.POST("/:id", middlewares.JwtMiddleware(), controllers.AdicionarPersonagem)
+		filme.POST("/:idFilme/:idPersonagem", middlewares.JwtMiddleware(), controllers.AdicionarPersonagem)
 
-		filme.PUT("/:id", middlewares.JwtMiddleware(), controllers.AtualizarFilme)
+		filme.PUT("/:idFilme", middlewares.JwtMiddleware(), controllers.AtualizarFilme)
 
-		filme.DELETE("/:id", middlewares.JwtMiddleware(), controllers.ExcluirFilme)
+		filme.DELETE("/:idFilme", middlewares.JwtMiddleware(), controllers.ExcluirFilme)
 	}
 }
