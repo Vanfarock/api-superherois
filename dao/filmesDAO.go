@@ -70,6 +70,27 @@ func (FilmesDAO) AdicionarPersonagemAoFilme(db *gorm.DB, idFilme string, idPerso
 	return erro
 }
 
+func (FilmesDAO) RemoverPersonagemDoFilme(db *gorm.DB, idFilme string, idPersonagem string) error {
+	filme := models.Filme{}
+	resultFilme := db.Where("id = ?", idFilme).Find(&filme)
+
+	if resultFilme.RowsAffected == 0 {
+		erro := errors.New("Filme não encontrado!")
+		return erro
+	}
+
+	personagem := models.Personagem{}
+	resultPersonagem := db.Where("id = ?", idPersonagem).Find(&personagem)
+
+	if resultPersonagem.RowsAffected == 0 {
+		erro := errors.New("Personagem não encontrado!")
+		return erro
+	}
+
+	erro := db.Model(&filme).Association("Personagens").Delete(&personagem)
+	return erro
+}
+
 func (FilmesDAO) AtualizarFilme(db *gorm.DB, filme models.Filme) error {
 	nfilme := models.Filme{}
 	result := db.Model(&nfilme).Where("id = ?", filme.ID).Update("AnoLancamento", filme.AnoLancamento).Update("Nome", filme.Nome)

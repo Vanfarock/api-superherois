@@ -92,6 +92,25 @@ func AdicionarPersonagem(c *gin.Context) {
 	c.AbortWithStatus(200)
 }
 
+func RemoverPersonagem(c *gin.Context) {
+	db, err := database.Connect()
+	if err != nil {
+		c.AbortWithError(500, err)
+		return
+	}
+
+	idFilme := c.Param("idFilme")
+	idPersonagem := c.Param("idPersonagem")
+
+	filmesDAO := new(dao.FilmesDAO)
+	err2 := filmesDAO.RemoverPersonagemDoFilme(db, idFilme, idPersonagem)
+	if err2 != nil {
+		c.AbortWithError(404, err2)
+		return
+	}
+	c.AbortWithStatus(200)
+}
+
 func AtualizarFilme(c *gin.Context) {
 	db, err := database.Connect()
 	if err != nil {
