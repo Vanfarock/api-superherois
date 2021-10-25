@@ -2,6 +2,7 @@ package main
 
 import (
 	"prog-web/config"
+	"prog-web/database"
 	"prog-web/routes"
 
 	"github.com/gin-gonic/gin"
@@ -9,6 +10,7 @@ import (
 
 func main() {
 	config.Load()
+	database.Migrar()
 
 	router := gin.Default()
 
