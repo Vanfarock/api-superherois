@@ -20,6 +20,8 @@ func getRotasFilmes(route *gin.Engine) {
 
 		filme.POST("/:idFilme/:idPersonagem", middlewares.JwtMiddleware(), controllers.AdicionarPersonagem)
 
+		filme.DELETE("/:idFilme/:idPersonagem", middlewares.JwtMiddleware(), controllers.RemoverPersonagem)
+
 		filme.PUT("/:idFilme", middlewares.JwtMiddleware(), controllers.AtualizarFilme)
 
 		filme.DELETE("/:idFilme", middlewares.JwtMiddleware(), controllers.ExcluirFilme)
